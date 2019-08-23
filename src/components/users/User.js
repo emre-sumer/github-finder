@@ -1,34 +1,23 @@
-import React, { Fragment,Component } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import Spinner from '../layout/Spinner'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import Repos from '../repos/Repos'
 
-export class User extends Component {
+const User = ({user, loading, getUser, getUserRepos, repos, match}) => {
+ // path="/user/:login"
+    useEffect(()=>{
+        getUser(match.params.login)
+        getUserRepos(match.params.login)
+        // eslint-disable-next-line
+    },[]);
+    
 
-    componentDidMount(){
-        // path="/user/:login"
-        this.props.getUser(this.props.match.params.login)
-        this.props.getUserRepos(this.props.match.params.login)
-        console.log('componentDidMount')
-    }
-
-static propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object.isRequired,
-    getUser: PropTypes.func.isRequired, 
-    getUserRepos: PropTypes.func.isRequired,
-    repos: PropTypes.array.isRequired,
-
-}
-
-    render() {
         const { name,avatar_url,location,bio,blog,login,html_url,followers,
-        following, public_repos,public_gists, hireable,company}=this.props.user;
-        const {loading,repos}=this.props;
+        following, public_repos,public_gists, hireable,company}=user;
 
         if(loading) return <Spinner />
-
+        
         return (
             <Fragment>
                 <Link to='/' className='btn btn-light'>
@@ -42,7 +31,7 @@ static propTypes = {
             }
             <div className="card grid-2">
                 <div className="all-center">
-                    <img src={avatar_url} className="round-img" style={{width:'150px'}} />
+                    <img src={avatar_url} className="round-img" style={{width:'150px'}} alt="" />
                 
                 <h1>{name}</h1>
                 <p>location: {location }</p>
@@ -85,7 +74,16 @@ static propTypes = {
             <Repos repos={repos} />
             </Fragment>
         )
-    }
+    
+}
+
+User.propTypes = {
+    loading: PropTypes.bool,
+    user: PropTypes.object.isRequired,
+    getUser: PropTypes.func.isRequired, 
+    getUserRepos: PropTypes.func.isRequired,
+    repos: PropTypes.array.isRequired,
+
 }
 
 export default User
